@@ -5,10 +5,16 @@ import type { ILoginInput } from './auth-types';
 import { helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import Error from '../../components/Error.vue'
-
+import BaseBtn from '../../components/BaseBtn.vue';
+import { loginUserHttp } from './actions/LoginUser';
+import { showError, successMsg } from '../../helper/ToastNotification';
+import Storage from '../../helper/Storage';
+import { useRouter } from 'vue-router'
+const loadingStatus = ref(false)
+const router = useRouter()
 const loginInput = ref<ILoginInput>({
-    email:'',
-    password:'',
+    email: 'h@email.com',
+    password: '123456',
 })
 
 const rules = {
@@ -18,10 +24,34 @@ const rules = {
 
 const v$ = useVuelidate(rules, loginInput)
 
-function loginUser() {
-    const result = v$.value.$validate()
+async function loginUser() {
+    const result = await v$.value.$validate()
 
     if (!result) return
+
+    try {
+        loadingStatus.value = true
+        const data = await loginUserHttp(loginInput.value)
+        Storage.set('userData', JSON.stringify(data))
+        loginInput.value = {} as ILoginInput
+        successMsg(data.message)
+        router.push({ name: 'dashboard' })
+        loadingStatus.value = false
+        v$.value.$reset()
+    } catch (error: any) {
+        loadingStatus.value = false
+        if (error.message) {
+            showError(error.message);
+        } else {
+            for (let err of Object.values(error.errors, {})) {
+                console.log(e);
+                
+                for (const e of err) {
+                    showError(e)
+                }
+            }
+        }
+    }
 }
 
 </script>
@@ -42,7 +72,7 @@ function loginUser() {
                             <input type="password" v-model="loginInput.password" class="form-control">
                         </Error>
                         <div class="d-grid gap-2 d-md-flex mt-2">
-                            <button class="btn btn-primary">Login</button>
+                           <BaseBtn label="Login" :loading="loadingStatus"/>
                             <router-link to="/register" class="btn btn-warning">Register</router-link>
                         </div>
                     </form>

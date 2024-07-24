@@ -5,6 +5,11 @@ import type { ICreatePostInput } from './admin-types';
 import { helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
 import Error from '../../components/Error.vue'
+import { showError, successMsg } from '../../helper/ToastNotification';
+import { createPostHttp } from './actions/CreatePost';
+import BaseBtn from '../../components/BaseBtn.vue';
+
+const loadingStatus = ref(false)
 
 const postInput = ref<ICreatePostInput>({
     title:'',
@@ -18,10 +23,22 @@ const rules = {
 
 const v$ = useVuelidate(rules, postInput)
 
-function createPost() {
-    const result = v$.value.$validate()
-
+async function createPost() {
+    const result = await v$.value.$validate()
+    
     if (!result) return
+    
+    try {
+        loadingStatus.value = true
+        const data = await createPostHttp(postInput.value)
+        successMsg(data.message)
+        loadingStatus.value = false
+        postInput.value = {} as ICreatePostInput
+        v$.value.$reset()
+    } catch (error:any) {
+        loadingStatus.value = false
+        showError(error.errors?.message)
+    }
 }
 
 </script>
@@ -40,7 +57,7 @@ function createPost() {
                             <textarea v-model="postInput.post_content" class="form-control"></textarea>
                         </Error>
                         <div class="d-grid gap-2 d-md-flex mt-2">
-                            <button class="btn btn-primary">Create</button>
+                            <BaseBtn label="Create Post" :loading="loadingStatus"/>
                             <router-link to="/list-post" class="btn btn-warning">List</router-link>
                         </div>
                     </form>

@@ -26,9 +26,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => ['required','string'],
             'email' => ['required','email',Rule::unique(User::class, 'email')],
-            'password' => 'required|min:6'
+            'password' => ['required','min:6']
         ];
     }
 
@@ -40,7 +40,7 @@ class RegisterRequest extends FormRequest
             'email.email' => 'O campo Email deve ser do tipo email.',
             'email.unique' => 'Email já cadastrado.',
             'password.required' => 'O campo Senha e obrigatório.',
-            'password.min' => 'O campo Senha deve conter o mínimo de 6 digitps.',
+            'password.min' => 'O campo Senha deve conter o mínimo de 6 digitos.',
         ];
     }
 }

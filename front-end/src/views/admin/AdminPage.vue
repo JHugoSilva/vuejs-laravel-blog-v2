@@ -1,13 +1,30 @@
+<script setup lang="ts">
 
+import { getUserData } from '../../helper/GetUserData';
+import Storage from '../../helper/Storage';
+import { logoutUserHttp } from './actions/LogoutUser';
+import { useRouter } from 'vue-router';
+const userData = getUserData()
+const router = useRouter()
+async function logoutUser() {
+    const userId = userData?.user?.id
+    if (typeof userId !== 'undefined') {
+        await logoutUserHttp()
+        Storage.remove('userData')
+        router.push('/')
+    }
+}
+
+</script>
 
 <template>
     <div class="container">
         <div>
-            <span>Name: João da Silva</span>
+            <span>Name: {{ userData?.user.name}}</span>
             <br>
-            <span>Email: <a href="">js@email.com</a> </span>
+            <span>Email: <a href="">{{ userData?.user.email }}</a> </span>
             <br>
-            <span style="color:red; cursor:pointer">
+            <span style="color:red; cursor:pointer" @click="logoutUser">
                 <b>Logout</b>
             </span>
             <br>
