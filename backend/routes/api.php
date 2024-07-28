@@ -9,11 +9,12 @@ Route::prefix('auth')->controller(AuthController::class)->group(function(){
     Route::post('register', 'register');
     Route::post('login', 'login');
     Route::delete('logout', 'logout')->middleware('auth:sanctum');
+    Route::get('check/user/loggedin', 'userLoggedIn')->middleware('auth:sanctum');
 });
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::prefix('posts')->controller(PostController::class)->group(function(){
-        Route::get('post', 'index');
+        Route::get('posts', 'index');
         Route::post('upload', 'addImage');
         Route::post('post', 'store');
         Route::put('post/{id}', 'update');

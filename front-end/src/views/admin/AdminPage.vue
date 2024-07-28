@@ -1,19 +1,38 @@
 <script setup lang="ts">
 
+import { onMounted } from 'vue';
 import { getUserData } from '../../helper/GetUserData';
 import Storage from '../../helper/Storage';
+import { showError, successMsg } from '../../helper/ToastNotification';
 import { logoutUserHttp } from './actions/LogoutUser';
 import { useRouter } from 'vue-router';
+import { userIsLoggedInHttp } from './actions/UserIsLoggedIn';
 const userData = getUserData()
 const router = useRouter()
 async function logoutUser() {
     const userId = userData?.user?.id
     if (typeof userId !== 'undefined') {
-        await logoutUserHttp()
+        const data = await logoutUserHttp()
+        setTimeout(()=>{
+            successMsg(data.message)
+            router.push('/')
+        }, 2000)
         Storage.remove('userData')
+    }
+}
+
+async function userIsLoggedIn() {
+    try {
+        await userIsLoggedInHttp()
+    } catch (error:any) {
+        showError(error.message)
         router.push('/')
     }
 }
+
+onMounted(async()=>{
+    userIsLoggedIn()
+})
 
 </script>
 

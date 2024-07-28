@@ -1,13 +1,13 @@
 <script setup lang="ts">
 //@ts-nocheck
 import { ref } from 'vue';
-import type { ICreatePostInput } from './admin-types';
+import type { ICreatePostInput } from './types/createPost.types';
 import { helpers, required } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
-import Error from '../../components/Error.vue'
-import { showError, successMsg } from '../../helper/ToastNotification';
+import Error from '../../../components/Error.vue'
+import { showError, successMsg } from '../../../helper/ToastNotification';
 import { createPostHttp } from './actions/CreatePost';
-import BaseBtn from '../../components/BaseBtn.vue';
+import BaseBtn from '../../../components/BaseBtn.vue';
 
 const loadingStatus = ref(false)
 
@@ -37,7 +37,9 @@ async function createPost() {
         v$.value.$reset()
     } catch (error:any) {
         loadingStatus.value = false
-        showError(error.errors?.message)
+        console.log(error);
+        
+        showError(error?.message)
     }
 }
 

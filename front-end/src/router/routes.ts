@@ -25,17 +25,17 @@ const routes = [
             {
                 path: '/admin',
                 name: 'dashboard',
-                component: () => import('../views/admin/DashboardPage.vue')
+                component: () => import('../views/admin/dashboard/DashboardPage.vue')
             },
             {
                 path: '/create-post',
                 name: 'create-post',
-                component: () => import('../views/admin/CreatePostPage.vue')
+                component: () => import('../views/admin/createpost/CreatePostPage.vue')
             },
             {
                 path: '/list-post',
                 name: 'list-post',
-                component: () => import('../views/admin/ListPostPage.vue')
+                component: () => import('../views/admin/postList/ListPostPage.vue')
             }
         ]
     }

@@ -126,8 +126,12 @@ class PostController extends Controller
             File::delete($fileExists);
         }
 
-        $post = $post->delete();
+        $post->delete();
 
-        return response()->json([], Response::HTTP_NO_CONTENT);
+        return response()->json([
+            'message' => 'Post deletado.',
+            'status' => true
+        ],
+        Response::HTTP_OK);
     }
 }

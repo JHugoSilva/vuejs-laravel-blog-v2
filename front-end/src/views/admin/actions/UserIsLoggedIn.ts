@@ -1,20 +1,18 @@
 import { verifyToken } from "../../../helper/VerifyToken";
 import { APP } from "../../../shared/App";
-import { ICreatePostInput } from "../admin-types";
 
-
-export type PostResponseType = {
+export type UserIsLoggedInResponseType = {
     message: string
 }
 
-export async function createPostHttp(input:ICreatePostInput) {
+export async function userIsLoggedInHttp() {
     const  { headers } = verifyToken()
-    return new Promise<PostResponseType>(async(resolve, reject)=>{
+    
+    return new Promise<UserIsLoggedInResponseType>(async(resolve, reject)=>{
         
-        const response = await fetch(`${APP.apiURL}/posts/post`, {
-            method: 'POST',
+        const response = await fetch(`${APP.apiURL}/auth/check/user/loggedin`, {
+            method: 'GET',
             headers: headers,
-            body: JSON.stringify(input)
         })
         const data = await response.json()
 

@@ -48,4 +48,8 @@ class AuthController extends Controller
             'message' => 'Logout Success'
         ], Response::HTTP_OK);
     }
+
+    public function userLoggedIn() {
+        return response()->json([], Response::HTTP_OK);
+    }
 }

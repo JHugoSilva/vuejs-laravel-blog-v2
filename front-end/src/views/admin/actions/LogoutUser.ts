@@ -13,12 +13,10 @@ export async function logoutUserHttp() {
         const response = await fetch(`${APP.apiURL}/auth/logout`, {
             method: 'DELETE',
             headers: headers,
-            // body: JSON.stringify({userId:userId})
         })
         const data = await response.json()
 
         if (!response.ok) {
-            // reject(new Error('An inspected error occurred !'))
             reject(data)
         }
 
