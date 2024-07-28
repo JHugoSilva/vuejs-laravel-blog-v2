@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'post_content' => $this->post_content,
-            'image' => $this->image ? url('/').'/storage/'.$this->image : null
+            'image' => $this->image ? url('/').'/storage/images/'.$this->image : null
         ];
     }
 }

@@ -2,16 +2,18 @@
 //@ts-nocheck
 import { onMounted, ref } from 'vue';
 import { getPostHttp } from './actions/GetPostList';
-import { myDebounce } from '../../../helper/util'
+import { closeModal, myDebounce, openModal } from '../../../helper/util'
 import type { GetPostResponseType } from './actions/GetPostList';
 import { Bootstrap5Pagination } from 'laravel-vue-pagination';
 import { confirmDelation } from '../../../helper/SweetAlert';
 import { deletePostHttp } from './actions/DeletePost';
 import { showError, successMsg } from '../../../helper/ToastNotification';
 import PostTable from './components/PostTable.vue';
+import UploadImageModal from './components/UploadImageModal.vue';
 
 const posts = ref<GetPostResponseType>()
 const query = ref<string>('')
+const currentPostId = ref<number>(0)
 
 async function showPost(page=1, query='') {
     const data = await getPostHttp(page, query)
@@ -33,6 +35,18 @@ async function deletePost(id:number, i:number) {
     })
 }
 
+async function showModal(postId:number){
+    await openModal('postModal', postId).then((postId)=>{
+        currentPostId.value = postId;
+    }).catch((err)=>{
+        console.log(err);
+    })
+}
+
+// function closeModal() {
+
+// }
+
 onMounted(async()=>{
     await showPost()
 })
@@ -47,7 +61,10 @@ onMounted(async()=>{
                 </div>
             </div>
         </div>
-        <PostTable :posts="posts" @delete-post="deletePost" />
+        <template v-if="posts">
+            <PostTable :posts="posts" @show-modal="showModal" @delete-post="deletePost" />
+        </template>
+        <UploadImageModal :post-id="currentPostId" @refresh-table="showPost"  @close-modal="closeModal('postModal')"/>
         <template v-if="posts">
             <Bootstrap5Pagination :data="posts" @pagination-change-page="showPost"/>
         </template>

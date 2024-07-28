@@ -26,10 +26,10 @@ class PostController extends Controller
         if (!is_null($query)) {
             $posts = $data->where('title', 'like', '%' . $query . '%');
 
-            return response()->json($posts->paginate(10), Response::HTTP_OK);
+            return response()->json($posts->paginate(3), Response::HTTP_OK);
         }
 
-        return response()->json(PostResource::collection($data->paginate(10))->resource, Response::HTTP_OK);
+        return response()->json(PostResource::collection($data->paginate(3))->resource, Response::HTTP_OK);
     }
 
     public function store(PostRequest $postRequest)
@@ -133,5 +133,49 @@ class PostController extends Controller
             'status' => true
         ],
         Response::HTTP_OK);
+    }
+
+    public function addImage(Request $request) {
+
+        $post = Post::find($request->id);
+
+        if (!$post) {
+            return response()->json([
+                'message' => "Post {$request->id} não localizado.",
+                'status' => false
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($request->hasFile('image')) {
+
+            $fileExists = public_path("storage/images/{$post->image}");
+
+            if (File::exists($fileExists)) {
+                File::delete($fileExists);
+            }
+
+            // Get filename with the extension
+            $filenameWithExt = $request->file('image')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('image')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore = auth()->user()->id . '_' . time() . '.' . $extension;
+            // Upload Image
+            $request->file('image')->storeAs('public/images', $fileNameToStore);
+        } else {
+            $fileNameToStore = $post->image;
+        }
+
+        $post->update([
+            'id' => $request->id,
+            'image' => $fileNameToStore
+        ]);
+
+        return response()->json([
+            'message' => 'Upload the image post.'
+        ], Response::HTTP_OK);
+
     }
 }

@@ -7,7 +7,8 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-    (e:'deletePost', postId:number, i:number):void
+    (e:'deletePost', postId:number, i:number):void,
+    (e:'showModal', postId:number):void
 }>()
 
 </script>
@@ -28,11 +29,13 @@ const emit = defineEmits<{
         <tbody>
             <tr v-for="(post, i) in posts?.data" :key="i">
                 <th>{{ post.id }}</th>
-                <td>{{ post.image }}</td>
+                <td>
+                    <img style="height: 75px;" :src="post.image" alt="" srcset="">
+                </td>
                 <td>{{ post.title }}</td>
                 <td>{{ post.post_content }}</td>
                 <td>
-                    <button class="btn btn-primary">Upload</button>
+                    <button @click="emit('showModal', post.id)" class="btn btn-primary">Upload</button>
                 </td>
                 <td>
                     <button class="btn btn-outline-primary">Edit</button>
