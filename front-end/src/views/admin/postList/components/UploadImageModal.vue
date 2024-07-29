@@ -29,7 +29,8 @@ async function uploadImage() {
             successMsg(data?.message)
             image.value = ''
             const imgTag = document.getElementById('outputImage') as HTMLImageElement
-            imgTag.src = ''
+            
+            imgTag.src = ''            
             emit('refreshTable')
         } else {
             showError('Please select an image.')
@@ -54,7 +55,7 @@ async function uploadImage() {
                             <div class="form-group">
                                 <img style="height: 150px;" src="" id="outputImage"> <br>
                                 <label for="">Image</label> <br>
-                                <input type="file" @change="selectImage">
+                                <input type="file" @change="selectImage" id="fileImage">
                             </div>
                         </div>
                         <div class="modal-footer">

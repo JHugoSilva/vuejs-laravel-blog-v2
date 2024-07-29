@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { GetPostResponseType } from '../actions/GetPostList';
+import { IEditPostDataInput } from '../types/postList-types';
 
 
 defineProps<{
@@ -8,7 +9,8 @@ defineProps<{
 
 const emit = defineEmits<{
     (e:'deletePost', postId:number, i:number):void,
-    (e:'showModal', postId:number):void
+    (e:'showModal', postId:number):void,
+    (e:'editPost', post:IEditPostDataInput):void
 }>()
 
 </script>
@@ -38,7 +40,7 @@ const emit = defineEmits<{
                     <button @click="emit('showModal', post.id)" class="btn btn-primary">Upload</button>
                 </td>
                 <td>
-                    <button class="btn btn-outline-primary">Edit</button>
+                    <button @click="emit('editPost', post)" class="btn btn-outline-primary">Edit</button>
                 </td>
                 <td>
                     <button @click="emit('deletePost', post.id, i)" class="btn btn-outline-danger">Delete</button>

@@ -10,7 +10,11 @@ import { deletePostHttp } from './actions/DeletePost';
 import { showError, successMsg } from '../../../helper/ToastNotification';
 import PostTable from './components/PostTable.vue';
 import UploadImageModal from './components/UploadImageModal.vue';
+import { IEditPostDataInput } from './types/postList-types';
+import { postStore } from '../../../stores/postStore';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const posts = ref<GetPostResponseType>()
 const query = ref<string>('')
 const currentPostId = ref<number>(0)
@@ -43,9 +47,13 @@ async function showModal(postId:number){
     })
 }
 
-// function closeModal() {
-
-// }
+function editPostData(postData:IEditPostDataInput) {
+   postStore.editPostData.id = postData.id
+   postStore.editPostData.title = postData.title
+   postStore.editPostData.post_content = postData.post_content
+   postStore.editPost.edit = true
+   router.push('/create-post')
+}
 
 onMounted(async()=>{
     await showPost()
@@ -62,7 +70,7 @@ onMounted(async()=>{
             </div>
         </div>
         <template v-if="posts">
-            <PostTable :posts="posts" @show-modal="showModal" @delete-post="deletePost" />
+            <PostTable :posts="posts" @edit-post="editPostData" @show-modal="showModal" @delete-post="deletePost" />
         </template>
         <UploadImageModal :post-id="currentPostId" @refresh-table="showPost"  @close-modal="closeModal('postModal')"/>
         <template v-if="posts">
